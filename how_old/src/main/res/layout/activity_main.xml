@@ -63,8 +63,10 @@
             android:id="@+id/id_age_gender"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/hint"
             android:drawableLeft="@drawable/male"
             android:gravity="center"
+            android:text="123"
             android:textColor="#ffff00ff"
             android:textSize="22sp"
             android:visibility="invisible" />

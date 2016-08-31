@@ -39,11 +39,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String mCurrentPhotoStr;
     private Bitmap mPhotoImg;
     private Paint mPaint;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,9 +51,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mPaint = new Paint();
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     private void initEvents() {
@@ -184,7 +176,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 int ageWidth = ageBitmap.getWidth();
                 int ageHeight = ageBitmap.getHeight();
 
-                //
+                //缩放ageBitmap
+                if (bitmap.getWidth() < mPhoto.getWidth() && bitmap.getHeight() < mPhoto.getHeight()) {
+                    float ratio = Math.max(bitmap.getWidth() * 1.0F / mPhoto.getWidth(), bitmap.getHeight() * 1.0F / mPhoto.getHeight());
+                    ageBitmap = Bitmap.createScaledBitmap(ageBitmap, (int) (ageWidth * ratio), (int) (ageHeight * ratio), false);
+                }
+
+                canvas.drawBitmap(ageBitmap, x - ageBitmap.getWidth() / 2, y - h / 2 - ageBitmap.getHeight(), null);
 
                 mPhotoImg = bitmap;
             }
@@ -220,6 +218,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.id_detect:
 
+                mWaiting.setVisibility(View.VISIBLE);
+
+                if (mCurrentPhotoStr != null && !mCurrentPhotoStr.trim().equals("")){
+                    resizePhoto();
+                }else {
+                    mPhotoImg = BitmapFactory.decodeResource(getResources(),R.drawable.t4);
+                }
+
                 FaceppDetect.detect(mPhotoImg, new FaceppDetect.CallBack() {
 
                     @Override
@@ -243,43 +249,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Main Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://com.cxz.how_old/http/host/path")
-        );
-        AppIndex.AppIndexApi.start(client, viewAction);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Main Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://com.cxz.how_old/http/host/path")
-        );
-        AppIndex.AppIndexApi.end(client, viewAction);
-        client.disconnect();
-    }
 }
